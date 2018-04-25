@@ -2,9 +2,9 @@
 
 # Authors: Gaetano Carlucci
 #          Giuseppe Cofano
-from .utils.Monitor import MonitorThread
-from .utils.Controller import ControllerThread
-from .utils.ClosedLoopActuator import ClosedLoopActuator
+from .Monitor import MonitorThread
+from .Controller import ControllerThread
+from .ClosedLoopActuator import ClosedLoopActuator
 from argparse import ArgumentParser
 from multiprocessing import Process, cpu_count
 
