@@ -43,7 +43,7 @@ if __name__ == '__main__':
     parser.add_argument('--cores', nargs='+',  dest='cores', required=True)
     parser.add_argument('--cpu-load', type=float, dest='cpu_load')
     parser.add_argument('--plot', type=int, dest='plot')
-    parser.add_argument('--d', type=int, dest='d')
+    parser.add_argument('--duration', type=int, dest='duration')
     args = parser.parse_args()
     args.cores = [int(num) for num in args.cores]
     supported_cores = list(range(cpu_count()))
@@ -51,4 +51,4 @@ if __name__ == '__main__':
         if core not in supported_cores:
             raise EnvironmentError(
                 'the selected core ({}) is not in the list of supported environments {}'.format(core, supported_cores))
-    main(args.cores, args.cpu_load, args.d, use_plot=args.plot)
+    main(args.cores, args.cpu_load, args.duration, use_plot=args.plot)
