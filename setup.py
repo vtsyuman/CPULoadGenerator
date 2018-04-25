@@ -7,6 +7,6 @@ setup(
     name='cpu_loader',
     version='0.1.0',
     description=description,
-    include_package_data=True,
+    packages=['CPULoadGenerator'],
     install_requires=['matplotlib']
 )

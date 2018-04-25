@@ -9,7 +9,7 @@ from argparse import ArgumentParser
 from multiprocessing import Process, cpu_count
 
 
-def worker(core_num, cpu_load, d, plot):
+def worker(core_num, cpu_load, d, plot, reporter_dir=None):
     monitor = MonitorThread(core_num, 0.1)
     monitor.start()
 
@@ -27,10 +27,10 @@ def worker(core_num, cpu_load, d, plot):
     control.join()
 
 
-def main(cores, cpu_load, duration, use_plot):
+def main(cores, cpu_load, duration, use_plot, reporter_dir=None):
     procs = []
     for core_num in cores:
-        proc = Process(target=worker, args=(int(core_num), cpu_load, duration, use_plot))
+        proc = Process(target=worker, args=(int(core_num), cpu_load, duration, use_plot,reporter_dir))
         procs.append(proc)
         proc.start()
 

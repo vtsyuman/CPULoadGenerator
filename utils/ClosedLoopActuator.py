@@ -10,7 +10,7 @@ class ClosedLoopActuator:
     """
         Generates CPU load by tuning the sleep time
     """
-    def __init__(self, controller, monitor, duration, cpu_core, target, plot):
+    def __init__(self, controller, monitor, duration, cpu_core, target, plot, reporter_dir):
         self.controller = controller
         self.monitor = monitor
         self.duration = duration
@@ -21,7 +21,7 @@ class ClosedLoopActuator:
         self.last_plot_time = time.time()
         self.start_time = time.time()
         if self.plot:
-            self.graph = RealTimePlot(self.duration, cpu_core, target)
+            self.graph = RealTimePlot(self.duration, cpu_core, target, reporter_dir)
 
     def send_plot_sample(self):
         if self.plot:
