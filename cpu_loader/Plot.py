@@ -49,6 +49,6 @@ class RealTimePlot:
     def close(self):
         if self.cpuT != 0:
             name = "{}-Target-Load {}".format(self.cpuT*100, str(uuid4())[:8]) + ".jpg"
-            os.path.join(self.report_dir, name)
-            plt.savefig(name, dpi=100)
+            full_name = os.path.join(self.report_dir, name)
+            plt.savefig(full_name, dpi=100)
         plt.close()

@@ -7,8 +7,8 @@
 import json
 import matplotlib.pyplot as plt
 
-from ..utils.Monitor import MonitorThread
-from ..utils.openLoopActuator import OpenLoopActuator
+from ..cpu_loader.Monitor import MonitorThread
+from ..cpu_loader.openLoopActuator import OpenLoopActuator
 
 period = 0.05 
 

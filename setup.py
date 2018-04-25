@@ -7,6 +7,6 @@ setup(
     name='cpu_loader',
     version='0.1.0',
     description=description,
-    packages=['CPULoadGenerator'],
-    install_requires=['matplotlib']
+    packages=['cpu_loader'],
+    install_requires=['matplotlib', 'psutil']  # apt-get install python3-tk
 )

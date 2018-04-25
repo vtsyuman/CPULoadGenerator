@@ -2,9 +2,9 @@
 
 # Authors: Gaetano Carlucci
 #          Giuseppe Cofano
-from utils.Monitor import MonitorThread
-from utils.Controller import ControllerThread
-from utils.ClosedLoopActuator import ClosedLoopActuator
+from .utils.Monitor import MonitorThread
+from .utils.Controller import ControllerThread
+from .utils.ClosedLoopActuator import ClosedLoopActuator
 from argparse import ArgumentParser
 from multiprocessing import Process, cpu_count
 
@@ -30,7 +30,7 @@ def worker(core_num, cpu_load, d, plot, reporter_dir=None):
 def main(cores, cpu_load, duration, use_plot, reporter_dir=None):
     procs = []
     for core_num in cores:
-        proc = Process(target=worker, args=(int(core_num), cpu_load, duration, use_plot,reporter_dir))
+        proc = Process(target=worker, args=(int(core_num), cpu_load, duration, use_plot, reporter_dir))
         procs.append(proc)
         proc.start()
 

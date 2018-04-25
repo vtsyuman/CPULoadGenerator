@@ -7,9 +7,9 @@
 import json
 import matplotlib.pyplot as plt
 
-from ..utils.Monitor import MonitorThread
-from ..utils.Controller import ControllerThread
-from ..utils.ClosedLoopActuator import ClosedLoopActuator
+from ..cpu_loader.Monitor import MonitorThread
+from ..cpu_loader.Controller import ControllerThread
+from ..cpu_loader.ClosedLoopActuator import ClosedLoopActuator
 
 if __name__ == "__main__":
    
