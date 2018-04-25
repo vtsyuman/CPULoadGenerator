@@ -1,14 +1,17 @@
-#Authors: Gaetano Carlucci
-#         Giuseppe Cofano
+# Authors: Gaetano Carlucci
+#          Giuseppe Cofano
 
+from uuid import uuid4
 import time
 import matplotlib.pyplot as plt
+import os
 
-class realTimePlot():
+
+class RealTimePlot:
     """
         Plots the CPU load
     """
-    def __init__(self, duration, cpu, target):
+    def __init__(self, duration, cpu, target, report_dir=None):
         plt.figure()
         plt.axis([0, duration, 0, 100])
         plt.ion()
@@ -16,19 +19,20 @@ class realTimePlot():
         plt.xlabel('Time(sec)')
         plt.ylabel('%')
         self.y_load = [0]
-        self.cpuT = target;
+        self.cpuT = target
         self.y_target = [0]
-        self.xdata = [0]       
+        self.xdata = [0]
         self.line_load, = plt.plot(self.y_load)
         self.line_target, = plt.plot(self.y_target)
+        self.report_dir = report_dir if report_dir is not None else os.getcwd()
         if target != 0:
-            plt.legend([self.line_target, self.line_load], ["Target CPU", "CPU [%d] Load" % (cpu)], ncol=2)
+            plt.legend([self.line_target, self.line_load], ["Target CPU", "CPU [%d] Load" % cpu], ncol=2)
         else:
-            plt.legend([self.line_load], ["CPU [%d] Load" % (cpu)], ncol=1)
+            plt.legend([self.line_load], ["CPU [%d] Load" % cpu], ncol=1)
         plt.grid(True)
         self.ts_start = time.time()
 
-    def plotSample(self, sample, target):
+    def plot_sample(self, sample, target):
         p_x = time.time() - self.ts_start
         p_load = sample
         self.xdata.append(p_x)
@@ -44,6 +48,7 @@ class realTimePlot():
 
     def close(self):
         if self.cpuT != 0:
-            name = "%d%%-Target-Load" % (self.cpuT*100)+ ".jpg"
+            name = "{}-Target-Load {}".format(self.cpuT*100, str(uuid4())[:8]) + ".jpg"
+            os.path.join(self.report_dir, name)
             plt.savefig(name, dpi=100)
-        plt.close();
+        plt.close()

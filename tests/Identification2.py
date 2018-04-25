@@ -1,19 +1,14 @@
 #!/usr/bin/python
 
-#Authors: Gaetano Carlucci
-#         Giuseppe Cofano
+# Authors: Gaetano Carlucci
+#          Giuseppe Cofano
 
 
-import time
 import json
 import matplotlib.pyplot as plt
 
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/../utils')
-
-from Monitor import MonitorThread
-from openLoopActuator import openLoopActuator
+from ..utils.Monitor import MonitorThread
+from ..utils.openLoopActuator import OpenLoopActuator
  
 if __name__ == "__main__":
    
@@ -25,18 +20,17 @@ if __name__ == "__main__":
     testing = 1
     dynamics_plot_online = 0
     if testing == 1:
-        sleepTimeSequence = [0.001, 0.005, 0.01, 0.02, 0.03, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5]
         sleepTimeSequence = [0.001, 0.03, 0.02, 0.00, 0.04, 0.05, 0.03, 0.01, 0.2, 0.05, 0.01]
-        #sleepTimeSequence = [0.005,  0.02]
+        # sleepTimeSequence = [0.005,  0.02]
 
         stepPeriod = 4
         monitor = MonitorThread(0, 0.1)
         monitor.start()
-        actuator = openLoopActuator(monitor, len(sleepTimeSequence) * stepPeriod, 0, dynamics_plot_online)
+        actuator = OpenLoopActuator(monitor, len(sleepTimeSequence) * stepPeriod, 0, dynamics_plot_online)
         actuator.run_sequence(sleepTimeSequence)
         
         monitor.running = 0
-        dynamics =  monitor.getDynamics()
+        dynamics = monitor.getDynamics()
         actuator.close()
         monitor.join()
         
@@ -54,7 +48,6 @@ if __name__ == "__main__":
     ax1.grid(True)
     for tl in ax1.get_yticklabels():
         tl.set_color('b')
-    
 
     ax2 = plt.twinx()
     ax2.set_ylabel('Sleep Time Target(s)', color='r')

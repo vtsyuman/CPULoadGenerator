@@ -1,65 +1,54 @@
 #!/usr/bin/python
 
-#Authors: Gaetano Carlucci
-#         Giuseppe Cofano
+# Authors: Gaetano Carlucci
+#          Giuseppe Cofano
+from utils.Monitor import MonitorThread
+from utils.Controller import ControllerThread
+from utils.ClosedLoopActuator import ClosedLoopActuator
+from argparse import ArgumentParser
+from multiprocessing import Process, cpu_count
 
-import multiprocessing
-from twisted.python import usage
 
-import sys
-sys.path.insert(0, 'utils')
-
-from Monitor import MonitorThread
-from Controller import ControllerThread
-from closedLoopActuator import closedLoopActuator
-
-class Options(usage.Options):
-    """
-       Defines the default input parameters
-    """
-    optParameters = [
-            ["cpuLoad", "l", 0.2, "Cpu Target Load", float],
-            ["duration", "d", 10, "Duration", int],
-            ["plot", "p" , 0, "Enable Plot", int],
-            ["cpu_core", "c" , 0, "Select the CPU on which generate the load", int]
-        ]
-                 
-if __name__ == "__main__":
-
-    import sys
-    options = Options()
-    try:
-        options.parseOptions()
-    except Exception, e:
-        print '%s: %s' % (sys.argv[0], e)
-        print '%s: Try --help for usage details.' % (sys.argv[0])
-        sys.exit(1)
-    else:
-        if options['cpuLoad'] < 0 or options['cpuLoad'] > 1: 
-            print "CPU target load out of the range [0,1]"
-            sys.exit(1)
-        if options['duration'] < 0: 
-            print "Invalid duration"
-            sys.exit(1)
-        if options['plot'] != 0 and options['plot'] != 1: 
-            print "plot can be enabled 1 or disabled 0"
-            sys.exit(1)
-        if options['cpu_core'] >= multiprocessing.cpu_count(): 
-            print "You have only %d cores on your machine" % (multiprocessing.cpu_count())
-            sys.exit(1)
-    
-    monitor = MonitorThread(options['cpu_core'], 0.1)
+def worker(core_num, cpu_load, d, plot):
+    monitor = MonitorThread(core_num, 0.1)
     monitor.start()
 
     control = ControllerThread(0.1)
     control.start()
-    control.setCpuTarget(options['cpuLoad'])
+    control.CT = cpu_load
+    actuator = ClosedLoopActuator(control, monitor, d, core_num, cpu_load, plot)
 
-    actuator = closedLoopActuator(control, monitor, options['duration'], options['cpu_core'], options['cpuLoad'], options['plot'])
     actuator.run()
-    actuator.close()
 
-    monitor.running = 0;
-    control.running = 0;
+    actuator.close()
+    monitor.running = False
+    control.running = False
     monitor.join()
     control.join()
+
+
+def main(cores, cpu_load, duration, use_plot):
+    procs = []
+    for core_num in cores:
+        proc = Process(target=worker, args=(int(core_num), cpu_load, duration, use_plot))
+        procs.append(proc)
+        proc.start()
+
+    for proc in procs:
+        proc.join()
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser()
+    parser.add_argument('--cores', nargs='+',  dest='cores', required=True)
+    parser.add_argument('--cpu-load', type=float, dest='cpu_load')
+    parser.add_argument('--plot', type=int, dest='plot')
+    parser.add_argument('--d', type=int, dest='d')
+    args = parser.parse_args()
+    args.cores = [int(num) for num in args.cores]
+    supported_cores = list(range(cpu_count()))
+    for core in args.cores:
+        if core not in supported_cores:
+            raise EnvironmentError(
+                'the selected core ({}) is not in the list of supported environments {}'.format(core, supported_cores))
+    main(args.cores, args.cpu_load, args.d, use_plot=args.plot)

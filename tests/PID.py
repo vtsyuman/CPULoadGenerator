@@ -1,19 +1,15 @@
 #!/usr/bin/python
 
-#Authors: Gaetano Carlucci
-#         Giuseppe Cofano
+# Authors: Gaetano Carlucci
+#          Giuseppe Cofano
 
 
 import json
 import matplotlib.pyplot as plt
 
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)) + '/../utils')
-
-from Monitor import MonitorThread
-from Controller import ControllerThread
-from closedLoopActuator import closedLoopActuator
+from ..utils.Monitor import MonitorThread
+from ..utils.Controller import ControllerThread
+from ..utils.ClosedLoopActuator import ClosedLoopActuator
 
 if __name__ == "__main__":
    
@@ -26,12 +22,12 @@ if __name__ == "__main__":
     dynamics_plot_online = 0
     if testing == 1:
         cpuSequence = [0.8, 0.1, 0.30, 0.70, 0.40, 0.10, 0.20, 0.60, 0.20, 0.70]
-        #cpuSequence = [0.8, 0.1]
+        # cpuSequence = [0.8, 0.1]
         stepPeriod = 4
 
         control = ControllerThread(0.1)
         monitor = MonitorThread(0, 0.1)
-        actuator = closedLoopActuator(control, monitor, len(cpuSequence) * stepPeriod, 0, 1, dynamics_plot_online)
+        actuator = ClosedLoopActuator(control, monitor, len(cpuSequence) * stepPeriod, 0, 1, dynamics_plot_online)
 
         monitor.start()
         control.start()
@@ -40,7 +36,7 @@ if __name__ == "__main__":
         actuator.close()
         monitor.running = 0
         control.running = 0
-        dynamics =  monitor.getDynamics()
+        dynamics = monitor.getDynamics()
        
         monitor.join()
         control.join()
@@ -65,7 +61,7 @@ if __name__ == "__main__":
     
     ax2 = plt.twinx()
     ax2.set_ylabel('Input Load', color='r')
-    cpuInput = [ 100*(x) for x in dynamics['cpuTarget']]
+    cpuInput = [100*x for x in dynamics['cpuTarget']]
     ax2.plot(dynamics['time'], cpuInput, 'r-')
     ax2.grid(True)
     ax2.set_ylim([0, 100])
@@ -80,5 +76,5 @@ if __name__ == "__main__":
     plt.xlabel('Time [ms]')
     plt.title('PID Actuation')
     plt.grid(True)
-    plt.savefig('PID Actuation.png',dpi=100)
+    plt.savefig('PID Actuation.png', dpi=100)
     plt.close()
