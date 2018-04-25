@@ -16,7 +16,7 @@ def worker(core_num, cpu_load, d, plot, reporter_dir=None):
     control = ControllerThread(0.1)
     control.start()
     control.CT = cpu_load
-    actuator = ClosedLoopActuator(control, monitor, d, core_num, cpu_load, plot)
+    actuator = ClosedLoopActuator(control, monitor, d, core_num, cpu_load, plot, reporter_dir)
 
     actuator.run()
 
