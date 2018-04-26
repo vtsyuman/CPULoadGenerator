@@ -1,10 +1,9 @@
 # Authors: Gaetano Carlucci
 #          Giuseppe Cofano
-
 from uuid import uuid4
 import time
-import matplotlib.pyplot as plt
 import os
+import matplotlib.pyplot as plt
 
 
 class RealTimePlot:
@@ -48,7 +47,7 @@ class RealTimePlot:
 
     def close(self):
         if self.cpuT != 0:
-            name = "{}-Target-Load {}".format(self.cpuT*100, str(uuid4())[:8]) + ".jpg"
+            name = "{}-Target-Load {}".format(self.cpuT*100, str(uuid4())[:8]) + ".png"
             full_name = os.path.join(self.report_dir, name)
             plt.savefig(full_name, dpi=100)
         plt.close()

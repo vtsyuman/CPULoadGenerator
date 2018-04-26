@@ -8,5 +8,5 @@ setup(
     version='0.1.0',
     description=description,
     packages=['cpu_loader'],
-    install_requires=['matplotlib', 'psutil']  # apt-get install python3-tk
+    install_requires=['matplotlib', 'psutil', 'PyVirtualDisplay']  # apt-get install python3-tk Xvfb
 )

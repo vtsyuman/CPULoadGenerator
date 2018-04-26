@@ -7,6 +7,7 @@ from .Controller import ControllerThread
 from .ClosedLoopActuator import ClosedLoopActuator
 from argparse import ArgumentParser
 from multiprocessing import Process, cpu_count
+from pyvirtualdisplay import Display
 
 
 def worker(core_num, cpu_load, d, plot, reporter_dir=None):
@@ -28,6 +29,8 @@ def worker(core_num, cpu_load, d, plot, reporter_dir=None):
 
 
 def main(cores, cpu_load, duration, use_plot, reporter_dir=None):
+    display = Display(visible=0, size=(800, 600))
+    display.start()
     procs = []
     for core_num in cores:
         proc = Process(target=worker, args=(int(core_num), cpu_load, duration, use_plot, reporter_dir))
@@ -36,6 +39,8 @@ def main(cores, cpu_load, duration, use_plot, reporter_dir=None):
 
     for proc in procs:
         proc.join()
+    display.stop()
+    return True
 
 
 if __name__ == '__main__':
